@@ -1,0 +1,154 @@
+table fact_transactions
+	lineageTag: b311ee09-e17d-418f-a5bc-2a211cf63d82
+
+	column TransactionID
+		dataType: string
+		lineageTag: 844fe088-16f4-47dd-a7d7-83962efb6432
+		summarizeBy: none
+		sourceColumn: TransactionID
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 30db1c9c-d97f-4a47-96ed-205664926ac8
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column MerchantKey
+		dataType: int64
+		isHidden
+		lineageTag: d182725e-9a15-40a6-9ea6-e68d84eadfe0
+		summarizeBy: none
+		sourceColumn: MerchantKey
+
+	column CustomerID
+		dataType: string
+		lineageTag: 8d3e8236-8298-42d7-b9af-57bce9fa786a
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+	column PaymentMethod
+		dataType: string
+		lineageTag: 012b18e1-5cf7-4eb2-9ae3-9ead11af12bf
+		summarizeBy: none
+		sourceColumn: PaymentMethod
+
+	column GrossAmountEUR
+		dataType: decimal
+		formatString: €#,0.00
+		lineageTag: 9a7596f1-816b-46a4-8e32-5474d149c9c9
+		summarizeBy: sum
+		sourceColumn: GrossAmountEUR
+
+	column CardCountry
+		dataType: string
+		lineageTag: e2e7afe4-065d-4a02-81e3-5ea5df2670b4
+		summarizeBy: none
+		sourceColumn: CardCountry
+
+	column IPCountry
+		dataType: string
+		lineageTag: 452d8dfc-c9af-41cd-a477-6b4f1088a37c
+		summarizeBy: none
+		sourceColumn: IPCountry
+
+	column DeviceType
+		dataType: string
+		lineageTag: 7e9947f8-c0ca-486b-8714-b09bfa228f8f
+		summarizeBy: none
+		sourceColumn: DeviceType
+
+	column Is3DS
+		dataType: boolean
+		lineageTag: d1cbbb46-aa19-45e2-b34d-42d2eb52f8ae
+		summarizeBy: none
+		sourceColumn: Is3DS
+
+	column AccountAgeDays
+		dataType: int64
+		lineageTag: b0069491-b99e-4185-b0a6-0c903ec7d815
+		summarizeBy: none
+		sourceColumn: AccountAgeDays
+
+	column TxnLast24h
+		dataType: int64
+		lineageTag: d4e9770d-dc72-43c8-aa4d-43f4cbf39389
+		summarizeBy: none
+		sourceColumn: TxnLast24h
+
+	column RiskScore
+		dataType: double
+		lineageTag: 5f6a6880-a5f7-46da-abc9-60ed3c2c715f
+		summarizeBy: none
+		sourceColumn: RiskScore
+
+	column Decision
+		dataType: string
+		lineageTag: c53589c3-f95a-427e-84b5-e37e73efa1c6
+		summarizeBy: none
+		sourceColumn: Decision
+
+	column IsFraud
+		dataType: boolean
+		lineageTag: 60c50351-dce3-46c6-9476-9162ca85de4d
+		summarizeBy: none
+		sourceColumn: IsFraud
+
+	column IsChargeback
+		dataType: boolean
+		lineageTag: be1ea3e7-c4e6-4b4c-949f-2b70419b2033
+		summarizeBy: none
+		sourceColumn: IsChargeback
+
+	column ChargebackReason
+		dataType: string
+		lineageTag: 41219c65-3887-4cc6-b489-630381ac65aa
+		summarizeBy: none
+		sourceColumn: ChargebackReason
+
+	column ChargebackDateKey
+		dataType: int64
+		isHidden
+		lineageTag: 867d24e4-6aba-4676-8983-aa1f4408f24e
+		summarizeBy: none
+		sourceColumn: ChargebackDateKey
+
+	column ChargebackFeeEUR
+		dataType: decimal
+		formatString: €#,0.00
+		lineageTag: 86444fd5-90af-45af-b44f-93292f59926e
+		summarizeBy: sum
+		sourceColumn: ChargebackFeeEUR
+
+	column GeoMismatch
+		dataType: boolean
+		lineageTag: dd4ae2f2-a8ff-453b-aa03-167b8370678d
+		summarizeBy: none
+		sourceColumn: GeoMismatch
+
+	column AccountAgeBand
+		dataType: string
+		lineageTag: ee18424d-6067-40d3-8884-6298c8037b91
+		summarizeBy: none
+		sourceColumn: AccountAgeBand
+
+	column RiskBand
+		dataType: string
+		lineageTag: e6b5d912-5660-45f3-8513-292eef235214
+		summarizeBy: none
+		sourceColumn: RiskBand
+
+	partition fact_transactions = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "fact_transactions.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    BlankToNull = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(BlankToNull, {{"TransactionID", type text}, {"DateKey", Int64.Type}, {"MerchantKey", Int64.Type}, {"CustomerID", type text}, {"PaymentMethod", type text}, {"GrossAmountEUR", Currency.Type}, {"CardCountry", type text}, {"IPCountry", type text}, {"DeviceType", type text}, {"Is3DS", type logical}, {"AccountAgeDays", Int64.Type}, {"TxnLast24h", Int64.Type}, {"RiskScore", type number}, {"Decision", type text}, {"IsFraud", type logical}, {"IsChargeback", type logical}, {"ChargebackReason", type text}, {"ChargebackDateKey", Int64.Type}, {"ChargebackFeeEUR", Currency.Type}}, "en-US"),
+				    GeoMismatch = Table.AddColumn(Typed, "GeoMismatch", each [CardCountry] <> [IPCountry], type logical),
+				    AgeBand = Table.AddColumn(GeoMismatch, "AccountAgeBand", each if [AccountAgeDays] < 14 then "0-13 days" else if [AccountAgeDays] < 90 then "14-89 days" else if [AccountAgeDays] < 365 then "90-364 days" else "1y+", type text),
+				    Final = Table.AddColumn(AgeBand, "RiskBand", each if [RiskScore] >= 80 then "Critical" else if [RiskScore] >= 55 then "High" else if [RiskScore] >= 30 then "Medium" else "Low", type text)
+				in
+				    Final
+

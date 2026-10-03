@@ -1,0 +1,17 @@
+table 'Decline Threshold'
+	lineageTag: ca27e999-3b95-4e9d-ae44-4f7c99f43709
+
+	column 'Decline Threshold Value'
+		dataType: int64
+		lineageTag: bb281193-e1ba-4909-9247-66d8cce8e34b
+		summarizeBy: none
+		sourceColumn: Decline Threshold Value
+
+	partition 'Decline Threshold' = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [Decline Threshold Value = Int64.Type], List.Transform({8..19}, each {_ * 5}))
+				in
+				    Source
+

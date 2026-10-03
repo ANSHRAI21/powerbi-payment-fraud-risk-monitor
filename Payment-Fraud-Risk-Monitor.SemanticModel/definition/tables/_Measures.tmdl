@@ -1,0 +1,196 @@
+table _Measures
+	lineageTag: dd3c8ab6-9668-4f89-9809-747c03e1652d
+
+	measure Transactions = COUNTROWS ( fact_transactions )
+		formatString: #,0
+		lineageTag: 727154df-c3ba-459f-ae28-cedb0324e93c
+
+	measure 'Processed Volume' = SUM ( fact_transactions[GrossAmountEUR] )
+		formatString: €#,0,.0"K"
+		lineageTag: 85224c9b-d938-48a7-850d-6ca84f141fef
+
+	measure 'Fraud Txns' = CALCULATE ( [Transactions], fact_transactions[IsFraud] = TRUE () )
+		formatString: #,0
+		lineageTag: 5546bff5-8c3d-4059-807e-cc5eb408f12e
+
+	measure 'Fraud Rate %' = DIVIDE ( [Fraud Txns], [Transactions] )
+		formatString: 0.0%
+		lineageTag: f6e6fd49-c56c-42fb-b5b6-6e5c471dc843
+
+	measure 'Fraud Volume' = CALCULATE ( [Processed Volume], fact_transactions[IsFraud] = TRUE () )
+		formatString: €#,0,.0"K"
+		lineageTag: 07d55afc-ddf3-4169-a49e-b2a5ffd52687
+
+	measure 'Fraud bps' = DIVIDE ( [Fraud Volume], [Processed Volume] ) * 10000
+		formatString: 0.0
+		lineageTag: 49a6395b-d3c3-456c-b0d1-2269d8a21fd4
+
+	measure Chargebacks =
+			CALCULATE (
+			    [Transactions],
+			    fact_transactions[IsChargeback] = TRUE (),
+			    USERELATIONSHIP ( fact_transactions[ChargebackDateKey], dim_date[DateKey] )
+			)
+		formatString: #,0
+		lineageTag: 28332e5b-d8ea-492d-af8b-04185a5cbf6d
+
+	measure 'Chargeback Rate %' = DIVIDE ( [Chargebacks], [Transactions] )
+		formatString: 0.0%
+		lineageTag: 343d1271-6027-48fe-80f5-083949134823
+
+	measure 'Chargeback Loss EUR' =
+			CALCULATE (
+			    SUM ( fact_transactions[GrossAmountEUR] ) + SUM ( fact_transactions[ChargebackFeeEUR] ),
+			    fact_transactions[IsChargeback] = TRUE (),
+			    USERELATIONSHIP ( fact_transactions[ChargebackDateKey], dim_date[DateKey] )
+			)
+		formatString: €#,0,.0"K"
+		lineageTag: 93797339-c2ac-49ca-92ad-c94ded6a49a8
+
+	measure 'Scheme Threshold' = 0.009
+		formatString: 0.0%
+		lineageTag: 0370ec3b-b167-4664-8ee9-384d721dc89b
+
+	measure 'Merchants Above Threshold' =
+			COUNTROWS (
+			    FILTER ( VALUES ( dim_merchant[MerchantKey] ),
+			             [Chargeback Rate %] > [Scheme Threshold] && [Transactions] >= 50 )
+			)
+		formatString: #,0
+		lineageTag: e814da2d-47e9-4d23-9796-20082cae4dd8
+
+	measure 'Chargeback Status' =
+			SWITCH (
+			    TRUE (),
+			    [Transactions] < 50, "Low volume",
+			    [Chargeback Rate %] > [Scheme Threshold], "Breach",
+			    [Chargeback Rate %] > [Scheme Threshold] * 0.75, "Watch",
+			    "OK"
+			)
+		lineageTag: bcb3938a-77a6-4564-acf3-22f11736e543
+
+	measure 'Blocked Txns' = CALCULATE ( [Transactions], fact_transactions[Decision] IN { "Declined", "Manual Review" } )
+		formatString: #,0
+		lineageTag: e1fb4ce3-74e9-49c4-8d48-721b2a085007
+
+	measure 'True Positives' = CALCULATE ( [Fraud Txns], fact_transactions[Decision] IN { "Declined", "Manual Review" } )
+		formatString: #,0
+		lineageTag: cf76b278-4a61-460f-9426-2a1a4fd22f9a
+
+	measure 'False Positives' =
+			CALCULATE (
+			    [Transactions],
+			    fact_transactions[IsFraud] = FALSE (),
+			    fact_transactions[Decision] IN { "Declined", "Manual Review" }
+			)
+		formatString: #,0
+		lineageTag: 4ad39ee8-4d13-4ec2-8628-bf677e78cd70
+
+	measure 'Fraud Capture Rate %' = DIVIDE ( [True Positives], [Fraud Txns] )   // recall
+		formatString: 0.0%
+		lineageTag: 597fbcb2-9238-4a57-ad9f-064f706ec3a6
+
+	measure 'Review Precision %' = DIVIDE ( [True Positives], [Blocked Txns] )   // precision
+		formatString: 0.0%
+		lineageTag: af516be6-3a37-462c-9a93-09a4c755008f
+
+	measure 'Approval Rate %' = DIVIDE ( CALCULATE ( [Transactions], fact_transactions[Decision] = "Approved" ), [Transactions] )
+		formatString: 0.0%
+		lineageTag: 38eccdba-3318-49fb-8248-bb69d7ebc340
+
+	measure 'Selected Threshold' = SELECTEDVALUE ( 'Decline Threshold'[Decline Threshold Value], 50 )
+		formatString: #,0.0
+		lineageTag: b3cd1860-61db-44e4-9d5d-ba943d1fc3b5
+
+	measure 'Sim Blocked Txns' =
+			VAR _t = [Selected Threshold]
+			RETURN CALCULATE ( [Transactions], fact_transactions[RiskScore] >= _t )
+		formatString: #,0
+		lineageTag: 838ab93f-a3f6-4c96-8277-bb0a33ced65c
+
+	measure 'Sim Fraud Caught' =
+			VAR _t = [Selected Threshold]
+			RETURN CALCULATE ( [Fraud Txns], fact_transactions[RiskScore] >= _t )
+		formatString: #,0
+		lineageTag: b614b9e5-54a0-4921-b419-e9d129bc1a90
+
+	measure 'Sim Capture Rate %' = DIVIDE ( [Sim Fraud Caught], [Fraud Txns] )
+		formatString: 0.0%
+		lineageTag: 975e938e-5483-41b6-98ff-33dcfa290e5a
+
+	measure 'Sim Good Customers Blocked' =
+			VAR _t = [Selected Threshold]
+			RETURN
+			    CALCULATE (
+			        [Transactions],
+			        fact_transactions[RiskScore] >= _t,
+			        fact_transactions[IsFraud] = FALSE ()
+			    )
+		formatString: #,0
+		lineageTag: e41618c3-4183-43a9-af70-9a785ee88652
+
+	measure 'Sim Revenue At Risk' =
+			VAR _t = [Selected Threshold]
+			RETURN
+			    CALCULATE (
+			        [Processed Volume],
+			        fact_transactions[RiskScore] >= _t,
+			        fact_transactions[IsFraud] = FALSE ()
+			    )
+		formatString: €#,0,.0"K"
+		lineageTag: 1399bcff-8e17-4713-bf8d-df2b61111deb
+
+	measure 'Sim Fraud Loss Avoided' =
+			VAR _t = [Selected Threshold]
+			RETURN
+			    CALCULATE (
+			        [Processed Volume],
+			        fact_transactions[RiskScore] >= _t,
+			        fact_transactions[IsFraud] = TRUE ()
+			    )
+		formatString: €#,0,.0"K"
+		lineageTag: e5bce3d9-c72d-4c66-b344-cb5a6f3d5129
+
+	measure 'Sim Net Benefit' = [Sim Fraud Loss Avoided] - [Sim Revenue At Risk] * 0.25   // assume 25% margin lost on false declines
+		formatString: €#,0,.0"K"
+		lineageTag: d1d28f0f-6482-456c-b309-ca5b8cc40212
+
+	measure 'Geo Mismatch Rate %' =
+			DIVIDE (
+			    CALCULATE ( [Transactions], FILTER ( fact_transactions, fact_transactions[CardCountry] <> fact_transactions[IPCountry] ) ),
+			    [Transactions]
+			)
+		formatString: 0.0%
+		lineageTag: 882248a3-604b-4a95-8072-f012c0b17057
+
+	measure 'New Account Fraud Rate %' = CALCULATE ( [Fraud Rate %], fact_transactions[AccountAgeDays] < 14 )
+		formatString: 0.0%
+		lineageTag: f5aad1d2-337d-4adc-8664-5551f2e372f9
+
+	measure 'Fraud Rate 7D Avg' = AVERAGEX ( DATESINPERIOD ( dim_date[Date], MAX ( dim_date[Date] ), -7, DAY ), [Fraud Rate %] )
+		formatString: 0.0%
+		lineageTag: 616b27a0-100e-4517-bc8a-9d07fff1892c
+
+	measure 'Fraud Spike Flag' =
+			VAR _window = DATESINPERIOD ( dim_date[Date], MAX ( dim_date[Date] ) - 1, -30, DAY )
+			VAR _mean = AVERAGEX ( _window, [Fraud Rate %] )
+			VAR _sd = STDEVX.P ( _window, [Fraud Rate %] )
+			RETURN IF ( [Fraud Rate %] > _mean + 2 * _sd, 1, 0 )
+		formatString: #,0.0
+		lineageTag: f92ee4d6-f96d-4e3b-b316-aa61aec0b21f
+
+	column Placeholder
+		dataType: string
+		isHidden
+		lineageTag: 281b526b-a0ba-4683-9b9e-2151f8c05ea0
+		summarizeBy: none
+		sourceColumn: Placeholder
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [Placeholder = text], {})
+				in
+				    Source
+

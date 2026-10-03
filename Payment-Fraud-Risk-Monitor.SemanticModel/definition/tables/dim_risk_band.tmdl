@@ -1,0 +1,41 @@
+table dim_risk_band
+	lineageTag: e1ccec0a-3f84-4664-af88-1bb19a5d1539
+
+	column BandOrder
+		dataType: int64
+		isHidden
+		lineageTag: 0935ecdf-74c0-4c50-8fa4-d635a27995d0
+		summarizeBy: none
+		sourceColumn: BandOrder
+
+	column RiskBand
+		dataType: string
+		lineageTag: 7f66e4a8-a9ba-4612-9ea8-97a4a312f5dd
+		summarizeBy: none
+		sourceColumn: RiskBand
+		sortByColumn: BandOrder
+
+	column MinScore
+		dataType: int64
+		lineageTag: cae47fd8-ad72-4197-8f7a-46622a6031e6
+		summarizeBy: none
+		sourceColumn: MinScore
+
+	column MaxScore
+		dataType: double
+		lineageTag: 5efe62d7-75eb-49fb-895d-6e2ec06e7e9e
+		summarizeBy: none
+		sourceColumn: MaxScore
+
+	partition dim_risk_band = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_risk_band.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    BlankToNull = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(BlankToNull, {{"BandOrder", Int64.Type}, {"RiskBand", type text}, {"MinScore", Int64.Type}, {"MaxScore", type number}}, "en-US"),
+				    Final = Typed
+				in
+				    Final
+

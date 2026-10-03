@@ -1,0 +1,5 @@
+expression DataFolder = "C:\Users\Anshrai\Documents\Marbill-PowerBI-Portfolio\02-payment-fraud-risk-monitor\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: db44b2c7-6c06-4b59-b447-acb0cec8f0ae
+
+	annotation PBI_ResultType = Text
+

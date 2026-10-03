@@ -1,0 +1,83 @@
+table dim_date
+	lineageTag: 50bf6236-dffd-4db1-af8a-37d1e79f34ea
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: a0c8121b-3e42-440b-b331-4d0d08811973
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isKey
+		lineageTag: b2e8a49b-d0f4-47ad-9826-75d7023f7ba3
+		summarizeBy: none
+		sourceColumn: Date
+
+	column Year
+		dataType: int64
+		lineageTag: e2718a2e-f12b-4d39-95d8-be415dace356
+		summarizeBy: none
+		sourceColumn: Year
+
+	column Quarter
+		dataType: string
+		lineageTag: 884deca1-ccbb-4c7d-b90c-a200e247d195
+		summarizeBy: none
+		sourceColumn: Quarter
+
+	column MonthNum
+		dataType: int64
+		isHidden
+		lineageTag: fca851dc-0c2a-4d27-8301-1c728ef9633d
+		summarizeBy: none
+		sourceColumn: MonthNum
+
+	column Month
+		dataType: string
+		lineageTag: 57676f0c-a377-4b1d-a758-cd881d7d063c
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: MonthNum
+
+	column YearMonth
+		dataType: string
+		lineageTag: 8311aab1-d537-4656-a413-d6b1df469d51
+		summarizeBy: none
+		sourceColumn: YearMonth
+
+	column WeekdayNum
+		dataType: int64
+		isHidden
+		lineageTag: d1bcc62d-8673-4b9c-b6f3-75da1e8e0f50
+		summarizeBy: none
+		sourceColumn: WeekdayNum
+
+	column Weekday
+		dataType: string
+		lineageTag: 00eaa556-cd39-48c8-a9a2-a4cad8952b85
+		summarizeBy: none
+		sourceColumn: Weekday
+		sortByColumn: WeekdayNum
+
+	column IsWeekend
+		dataType: boolean
+		lineageTag: 9df888cc-d15b-43c9-8b60-571a8b605b87
+		summarizeBy: none
+		sourceColumn: IsWeekend
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_date.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    BlankToNull = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(BlankToNull, {{"DateKey", Int64.Type}, {"Date", type date}, {"Year", Int64.Type}, {"Quarter", type text}, {"MonthNum", Int64.Type}, {"Month", type text}, {"YearMonth", type text}, {"WeekdayNum", Int64.Type}, {"Weekday", type text}, {"IsWeekend", type logical}}, "en-US"),
+				    Final = Typed
+				in
+				    Final
+

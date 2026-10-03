@@ -1,0 +1,21 @@
+relationship 42bb87dc-ce14-4dca-9732-87ecbc85937e
+	fromColumn: fact_transactions.DateKey
+	toColumn: dim_date.DateKey
+
+relationship c054ace0-e000-4b44-ba37-50bcea65eb67
+	isActive: false
+	fromColumn: fact_transactions.ChargebackDateKey
+	toColumn: dim_date.DateKey
+
+relationship ce4a2895-0e22-4ec5-881c-f5fe058cec97
+	fromColumn: fact_transactions.MerchantKey
+	toColumn: dim_merchant.MerchantKey
+
+relationship f0ab5cf3-82db-49be-9055-90382e597bf2
+	fromColumn: fact_transactions.CardCountry
+	toColumn: dim_geography.CountryCode
+
+relationship 93bd1bb1-12b8-486e-b1ee-dff003de0070
+	fromColumn: fact_transactions.RiskBand
+	toColumn: dim_risk_band.RiskBand
+

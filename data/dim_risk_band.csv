@@ -1,0 +1,5 @@
+BandOrder,RiskBand,MinScore,MaxScore
+1,Low,0,29.9
+2,Medium,30,54.9
+3,High,55,79.9
+4,Critical,80,100.0

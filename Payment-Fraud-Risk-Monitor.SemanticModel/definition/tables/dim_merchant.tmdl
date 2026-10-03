@@ -1,0 +1,58 @@
+table dim_merchant
+	lineageTag: 52e42d41-a722-4275-9cea-dfe6f19f7346
+
+	column MerchantKey
+		dataType: int64
+		isHidden
+		lineageTag: cf3aa168-c86c-409b-bd86-385389c8bf70
+		summarizeBy: none
+		sourceColumn: MerchantKey
+
+	column MerchantID
+		dataType: string
+		lineageTag: 09d24a69-951b-45a1-a787-55f4b33dbee4
+		summarizeBy: none
+		sourceColumn: MerchantID
+
+	column MerchantName
+		dataType: string
+		lineageTag: e6da8d9c-2631-41e6-8191-27b9939a28dc
+		summarizeBy: none
+		sourceColumn: MerchantName
+
+	column Category
+		dataType: string
+		lineageTag: 4ffbbed6-d723-4d35-a04f-c04adb94c80c
+		summarizeBy: none
+		sourceColumn: Category
+
+	column CountryCode
+		dataType: string
+		lineageTag: 74e560d3-e695-401a-b304-73c1539a9af1
+		summarizeBy: none
+		sourceColumn: CountryCode
+
+	column Region
+		dataType: string
+		lineageTag: 28ffb877-5619-42c8-b0a6-de73559b8bd4
+		summarizeBy: none
+		sourceColumn: Region
+
+	column Tier
+		dataType: string
+		lineageTag: e60e0761-36a8-4c83-967a-36edde582d01
+		summarizeBy: none
+		sourceColumn: Tier
+
+	partition dim_merchant = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_merchant.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    BlankToNull = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(BlankToNull, {{"MerchantKey", Int64.Type}, {"MerchantID", type text}, {"MerchantName", type text}, {"Category", type text}, {"CountryCode", type text}, {"Region", type text}, {"Tier", type text}}, "en-US"),
+				    Final = Typed
+				in
+				    Final
+

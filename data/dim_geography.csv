@@ -1,0 +1,13 @@
+CountryCode,Country,Currency,Region
+DE,Germany,EUR,EU
+FR,France,EUR,EU
+ES,Spain,EUR,EU
+IT,Italy,EUR,EU
+NL,Netherlands,EUR,EU
+GB,United Kingdom,GBP,UK
+US,United States,USD,NA
+CA,Canada,CAD,NA
+IN,India,INR,APAC
+AU,Australia,AUD,APAC
+BR,Brazil,BRL,LATAM
+MX,Mexico,MXN,LATAM

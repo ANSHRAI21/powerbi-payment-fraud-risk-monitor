@@ -1,0 +1,181 @@
+MerchantKey,MerchantID,MerchantName,Category,CountryCode,Region,Tier
+1,M10001,Blue Co 1,Books,DE,EU,Enterprise
+2,M10002,Zen Goods 2,Grocery,FR,EU,Starter
+3,M10003,Echo Outlet 3,Electronics,DE,EU,Starter
+4,M10004,Atlas Supply 4,Grocery,US,NA,Growth
+5,M10005,Atlas Outlet 5,Fashion,US,NA,Enterprise
+6,M10006,Bright Outlet 6,Sports,NL,EU,Growth
+7,M10007,Blue Goods 7,Beauty,ES,EU,Starter
+8,M10008,Prime Outlet 8,Home & Living,GB,UK,Growth
+9,M10009,Urban Goods 9,Fashion,AU,APAC,Starter
+10,M10010,Blue Market 10,Books,IN,APAC,Starter
+11,M10011,Vivid Supply 11,Home & Living,DE,EU,Starter
+12,M10012,Coral Supply 12,Toys,FR,EU,Enterprise
+13,M10013,Prime Collective 13,Beauty,FR,EU,Starter
+14,M10014,Zen Market 14,Home & Living,ES,EU,Growth
+15,M10015,Prime Co 15,Grocery,US,NA,Starter
+16,M10016,Zen Store 16,Fashion,NL,EU,Starter
+17,M10017,Vivid Market 17,Toys,DE,EU,Starter
+18,M10018,Blue Store 18,Toys,IT,EU,Starter
+19,M10019,Bright Market 19,Beauty,GB,UK,Enterprise
+20,M10020,Atlas Co 20,Home & Living,DE,EU,Starter
+21,M10021,Vivid Market 21,Fashion,IN,APAC,Growth
+22,M10022,Luna Co 22,Grocery,DE,EU,Growth
+23,M10023,Urban Outlet 23,Grocery,BR,LATAM,Enterprise
+24,M10024,Coral Supply 24,Electronics,DE,EU,Enterprise
+25,M10025,Zen Outlet 25,Fashion,IN,APAC,Growth
+26,M10026,Echo Market 26,Fashion,AU,APAC,Growth
+27,M10027,Luna Boutique 27,Fashion,MX,LATAM,Growth
+28,M10028,Zen Co 28,Books,IN,APAC,Starter
+29,M10029,Vivid Market 29,Grocery,CA,NA,Starter
+30,M10030,Atlas Boutique 30,Electronics,US,NA,Growth
+31,M10031,Atlas Market 31,Toys,CA,NA,Growth
+32,M10032,Urban Supply 32,Electronics,DE,EU,Growth
+33,M10033,Blue Boutique 33,Home & Living,GB,UK,Starter
+34,M10034,Vivid Outlet 34,Sports,GB,UK,Growth
+35,M10035,Bright Supply 35,Toys,IN,APAC,Enterprise
+36,M10036,Nova Market 36,Books,GB,UK,Growth
+37,M10037,Bright Store 37,Fashion,IT,EU,Growth
+38,M10038,Zen Store 38,Electronics,US,NA,Growth
+39,M10039,Peak Outlet 39,Home & Living,ES,EU,Starter
+40,M10040,Echo Co 40,Home & Living,DE,EU,Starter
+41,M10041,Blue Goods 41,Grocery,GB,UK,Starter
+42,M10042,Zen Outlet 42,Books,NL,EU,Starter
+43,M10043,Prime Supply 43,Home & Living,FR,EU,Starter
+44,M10044,Luna Goods 44,Grocery,IT,EU,Growth
+45,M10045,Nova Supply 45,Beauty,IT,EU,Starter
+46,M10046,Coral Market 46,Sports,IT,EU,Starter
+47,M10047,Atlas Boutique 47,Beauty,IT,EU,Growth
+48,M10048,Bright Collective 48,Electronics,US,NA,Starter
+49,M10049,Prime Collective 49,Grocery,ES,EU,Growth
+50,M10050,Zen Goods 50,Fashion,BR,LATAM,Starter
+51,M10051,Zen Outlet 51,Electronics,AU,APAC,Starter
+52,M10052,Urban Boutique 52,Electronics,GB,UK,Starter
+53,M10053,Luna Store 53,Home & Living,IT,EU,Starter
+54,M10054,Atlas Boutique 54,Electronics,GB,UK,Starter
+55,M10055,Atlas Outlet 55,Fashion,IN,APAC,Starter
+56,M10056,Nova Supply 56,Toys,US,NA,Starter
+57,M10057,Vivid Supply 57,Grocery,IN,APAC,Growth
+58,M10058,Blue Outlet 58,Fashion,GB,UK,Starter
+59,M10059,Prime Market 59,Home & Living,US,NA,Growth
+60,M10060,Prime Supply 60,Sports,ES,EU,Enterprise
+61,M10061,Coral Goods 61,Grocery,US,NA,Enterprise
+62,M10062,Prime Collective 62,Toys,FR,EU,Starter
+63,M10063,Luna Store 63,Books,US,NA,Enterprise
+64,M10064,Coral Supply 64,Sports,IN,APAC,Growth
+65,M10065,Luna Supply 65,Beauty,DE,EU,Growth
+66,M10066,Peak Store 66,Electronics,US,NA,Growth
+67,M10067,Bright Boutique 67,Books,DE,EU,Growth
+68,M10068,Luna Outlet 68,Books,US,NA,Starter
+69,M10069,Nova Boutique 69,Fashion,DE,EU,Enterprise
+70,M10070,Atlas Store 70,Toys,BR,LATAM,Starter
+71,M10071,Zen Goods 71,Fashion,DE,EU,Starter
+72,M10072,Urban Outlet 72,Toys,BR,LATAM,Growth
+73,M10073,Atlas Goods 73,Books,IN,APAC,Growth
+74,M10074,Blue Market 74,Electronics,US,NA,Starter
+75,M10075,Prime Supply 75,Beauty,CA,NA,Enterprise
+76,M10076,Atlas Goods 76,Fashion,CA,NA,Growth
+77,M10077,Peak Supply 77,Sports,BR,LATAM,Starter
+78,M10078,Urban Store 78,Grocery,ES,EU,Starter
+79,M10079,Vivid Goods 79,Fashion,US,NA,Starter
+80,M10080,Prime Collective 80,Beauty,DE,EU,Growth
+81,M10081,Coral Boutique 81,Grocery,US,NA,Starter
+82,M10082,Atlas Goods 82,Home & Living,FR,EU,Starter
+83,M10083,Blue Market 83,Electronics,GB,UK,Growth
+84,M10084,Zen Co 84,Beauty,US,NA,Starter
+85,M10085,Echo Co 85,Sports,GB,UK,Enterprise
+86,M10086,Prime Collective 86,Toys,GB,UK,Growth
+87,M10087,Blue Outlet 87,Home & Living,CA,NA,Starter
+88,M10088,Peak Market 88,Grocery,CA,NA,Growth
+89,M10089,Zen Collective 89,Sports,GB,UK,Growth
+90,M10090,Zen Collective 90,Home & Living,US,NA,Starter
+91,M10091,Atlas Market 91,Grocery,BR,LATAM,Starter
+92,M10092,Zen Store 92,Grocery,DE,EU,Starter
+93,M10093,Bright Goods 93,Beauty,DE,EU,Starter
+94,M10094,Luna Co 94,Fashion,DE,EU,Starter
+95,M10095,Bright Outlet 95,Sports,US,NA,Enterprise
+96,M10096,Peak Outlet 96,Sports,NL,EU,Growth
+97,M10097,Urban Outlet 97,Electronics,CA,NA,Growth
+98,M10098,Prime Boutique 98,Toys,US,NA,Enterprise
+99,M10099,Echo Store 99,Books,IT,EU,Starter
+100,M10100,Blue Store 100,Fashion,AU,APAC,Growth
+101,M10101,Zen Market 101,Toys,CA,NA,Growth
+102,M10102,Urban Outlet 102,Electronics,ES,EU,Growth
+103,M10103,Zen Supply 103,Toys,IT,EU,Growth
+104,M10104,Nova Outlet 104,Beauty,ES,EU,Starter
+105,M10105,Zen Outlet 105,Fashion,FR,EU,Enterprise
+106,M10106,Zen Co 106,Grocery,FR,EU,Growth
+107,M10107,Zen Goods 107,Electronics,BR,LATAM,Growth
+108,M10108,Echo Collective 108,Sports,NL,EU,Growth
+109,M10109,Atlas Collective 109,Electronics,IT,EU,Starter
+110,M10110,Prime Outlet 110,Grocery,US,NA,Growth
+111,M10111,Peak Boutique 111,Toys,GB,UK,Enterprise
+112,M10112,Zen Market 112,Books,BR,LATAM,Growth
+113,M10113,Vivid Co 113,Beauty,CA,NA,Starter
+114,M10114,Atlas Market 114,Beauty,GB,UK,Starter
+115,M10115,Vivid Collective 115,Toys,IT,EU,Starter
+116,M10116,Vivid Collective 116,Books,MX,LATAM,Starter
+117,M10117,Nova Boutique 117,Books,US,NA,Starter
+118,M10118,Blue Outlet 118,Fashion,BR,LATAM,Enterprise
+119,M10119,Urban Market 119,Toys,DE,EU,Growth
+120,M10120,Blue Store 120,Fashion,IN,APAC,Starter
+121,M10121,Atlas Market 121,Home & Living,US,NA,Growth
+122,M10122,Prime Boutique 122,Books,DE,EU,Starter
+123,M10123,Echo Store 123,Home & Living,US,NA,Growth
+124,M10124,Atlas Co 124,Books,US,NA,Starter
+125,M10125,Bright Collective 125,Beauty,DE,EU,Starter
+126,M10126,Vivid Goods 126,Electronics,GB,UK,Starter
+127,M10127,Nova Market 127,Home & Living,IN,APAC,Starter
+128,M10128,Zen Collective 128,Sports,ES,EU,Starter
+129,M10129,Vivid Market 129,Books,GB,UK,Starter
+130,M10130,Echo Store 130,Sports,NL,EU,Growth
+131,M10131,Vivid Supply 131,Grocery,ES,EU,Growth
+132,M10132,Vivid Supply 132,Books,AU,APAC,Starter
+133,M10133,Blue Store 133,Books,CA,NA,Enterprise
+134,M10134,Vivid Market 134,Sports,DE,EU,Growth
+135,M10135,Zen Goods 135,Home & Living,MX,LATAM,Starter
+136,M10136,Peak Supply 136,Beauty,AU,APAC,Starter
+137,M10137,Echo Supply 137,Fashion,ES,EU,Growth
+138,M10138,Nova Supply 138,Home & Living,IN,APAC,Growth
+139,M10139,Luna Co 139,Grocery,DE,EU,Growth
+140,M10140,Atlas Boutique 140,Beauty,MX,LATAM,Enterprise
+141,M10141,Coral Market 141,Fashion,US,NA,Starter
+142,M10142,Urban Store 142,Toys,US,NA,Growth
+143,M10143,Peak Collective 143,Grocery,DE,EU,Growth
+144,M10144,Luna Co 144,Books,AU,APAC,Starter
+145,M10145,Coral Co 145,Home & Living,DE,EU,Enterprise
+146,M10146,Bright Goods 146,Beauty,ES,EU,Growth
+147,M10147,Nova Goods 147,Sports,FR,EU,Starter
+148,M10148,Urban Store 148,Electronics,CA,NA,Starter
+149,M10149,Zen Goods 149,Home & Living,FR,EU,Starter
+150,M10150,Nova Collective 150,Electronics,AU,APAC,Starter
+151,M10151,Bright Collective 151,Grocery,US,NA,Growth
+152,M10152,Peak Market 152,Toys,DE,EU,Starter
+153,M10153,Coral Market 153,Books,DE,EU,Starter
+154,M10154,Peak Boutique 154,Books,DE,EU,Starter
+155,M10155,Atlas Outlet 155,Grocery,US,NA,Starter
+156,M10156,Echo Boutique 156,Fashion,IN,APAC,Starter
+157,M10157,Blue Co 157,Grocery,FR,EU,Starter
+158,M10158,Vivid Market 158,Fashion,IN,APAC,Enterprise
+159,M10159,Vivid Goods 159,Beauty,DE,EU,Starter
+160,M10160,Zen Co 160,Sports,IN,APAC,Growth
+161,M10161,Coral Supply 161,Home & Living,BR,LATAM,Starter
+162,M10162,Echo Market 162,Electronics,CA,NA,Starter
+163,M10163,Luna Collective 163,Electronics,US,NA,Starter
+164,M10164,Luna Collective 164,Books,IN,APAC,Starter
+165,M10165,Atlas Co 165,Home & Living,DE,EU,Growth
+166,M10166,Zen Market 166,Home & Living,FR,EU,Starter
+167,M10167,Peak Co 167,Grocery,DE,EU,Starter
+168,M10168,Urban Co 168,Electronics,GB,UK,Growth
+169,M10169,Luna Goods 169,Grocery,US,NA,Enterprise
+170,M10170,Nova Goods 170,Grocery,US,NA,Enterprise
+171,M10171,Blue Collective 171,Sports,IN,APAC,Starter
+172,M10172,Blue Store 172,Electronics,FR,EU,Growth
+173,M10173,Zen Market 173,Electronics,US,NA,Starter
+174,M10174,Prime Outlet 174,Home & Living,FR,EU,Growth
+175,M10175,Prime Co 175,Sports,ES,EU,Starter
+176,M10176,Atlas Co 176,Electronics,US,NA,Growth
+177,M10177,Prime Goods 177,Beauty,MX,LATAM,Starter
+178,M10178,Blue Co 178,Fashion,US,NA,Enterprise
+179,M10179,Bright Store 179,Sports,DE,EU,Starter
+180,M10180,Vivid Supply 180,Fashion,US,NA,Starter

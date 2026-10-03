@@ -1,0 +1,39 @@
+table dim_geography
+	lineageTag: f6d1d041-6c11-4f06-981d-6c56dbccbb0b
+
+	column CountryCode
+		dataType: string
+		lineageTag: bb61ef73-1c55-490b-9e39-61bf3f31fc43
+		summarizeBy: none
+		sourceColumn: CountryCode
+
+	column Country
+		dataType: string
+		lineageTag: bbd014eb-dc28-4abf-895f-7d66a62614d5
+		summarizeBy: none
+		sourceColumn: Country
+
+	column Currency
+		dataType: string
+		lineageTag: ebd5dad3-8ecb-477d-bb81-b08a15d86616
+		summarizeBy: none
+		sourceColumn: Currency
+
+	column Region
+		dataType: string
+		lineageTag: d0e23709-1b71-45ae-ab8d-2e526c997181
+		summarizeBy: none
+		sourceColumn: Region
+
+	partition dim_geography = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_geography.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    BlankToNull = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(BlankToNull, {{"CountryCode", type text}, {"Country", type text}, {"Currency", type text}, {"Region", type text}}, "en-US"),
+				    Final = Typed
+				in
+				    Final
+

@@ -1,0 +1,140 @@
+// ============================================================
+// Payment Fraud & Chargeback Risk Monitor — DAX measures
+// Model: fact_transactions -> dim_date (DateKey, active)
+//                          -> dim_date (ChargebackDateKey, INACTIVE, used via USERELATIONSHIP)
+//                          -> dim_merchant, dim_geography (CardCountry)
+// What-if parameter: 'Decline Threshold'[Decline Threshold Value]  (GENERATESERIES(40, 95, 5))
+// ============================================================
+
+Transactions = COUNTROWS ( fact_transactions )
+
+Processed Volume = SUM ( fact_transactions[GrossAmountEUR] )
+
+// ---------- Fraud ----------
+Fraud Txns =
+CALCULATE ( [Transactions], fact_transactions[IsFraud] = TRUE () )
+
+Fraud Rate % = DIVIDE ( [Fraud Txns], [Transactions] )
+
+Fraud Volume =
+CALCULATE ( [Processed Volume], fact_transactions[IsFraud] = TRUE () )
+
+Fraud bps = DIVIDE ( [Fraud Volume], [Processed Volume] ) * 10000
+
+// ---------- Chargebacks (by chargeback date, not order date) ----------
+Chargebacks =
+CALCULATE (
+    [Transactions],
+    fact_transactions[IsChargeback] = TRUE (),
+    USERELATIONSHIP ( fact_transactions[ChargebackDateKey], dim_date[DateKey] )
+)
+
+Chargeback Rate % = DIVIDE ( [Chargebacks], [Transactions] )
+
+Chargeback Loss EUR =
+CALCULATE (
+    SUM ( fact_transactions[GrossAmountEUR] ) + SUM ( fact_transactions[ChargebackFeeEUR] ),
+    fact_transactions[IsChargeback] = TRUE (),
+    USERELATIONSHIP ( fact_transactions[ChargebackDateKey], dim_date[DateKey] )
+)
+
+// Card schemes put merchants into monitoring programmes above ~0.9% chargeback-to-transaction ratio
+Scheme Threshold = 0.009
+
+Merchants Above Threshold =
+COUNTROWS (
+    FILTER ( VALUES ( dim_merchant[MerchantKey] ),
+             [Chargeback Rate %] > [Scheme Threshold] && [Transactions] >= 50 )
+)
+
+Chargeback Status =
+SWITCH (
+    TRUE (),
+    [Transactions] < 50, "Low volume",
+    [Chargeback Rate %] > [Scheme Threshold], "Breach",
+    [Chargeback Rate %] > [Scheme Threshold] * 0.75, "Watch",
+    "OK"
+)
+
+// ---------- Rule-engine performance (confusion matrix) ----------
+Blocked Txns =
+CALCULATE ( [Transactions], fact_transactions[Decision] IN { "Declined", "Manual Review" } )
+
+True Positives =
+CALCULATE ( [Fraud Txns], fact_transactions[Decision] IN { "Declined", "Manual Review" } )
+
+False Positives =
+CALCULATE (
+    [Transactions],
+    fact_transactions[IsFraud] = FALSE (),
+    fact_transactions[Decision] IN { "Declined", "Manual Review" }
+)
+
+Fraud Capture Rate % = DIVIDE ( [True Positives], [Fraud Txns] )   // recall
+
+Review Precision % = DIVIDE ( [True Positives], [Blocked Txns] )   // precision
+
+Approval Rate % =
+DIVIDE ( CALCULATE ( [Transactions], fact_transactions[Decision] = "Approved" ), [Transactions] )
+
+// ---------- What-if: simulate a new decline threshold ----------
+Selected Threshold = SELECTEDVALUE ( 'Decline Threshold'[Decline Threshold Value], 50 )
+
+Sim Blocked Txns =
+VAR _t = [Selected Threshold]
+RETURN CALCULATE ( [Transactions], fact_transactions[RiskScore] >= _t )
+
+Sim Fraud Caught =
+VAR _t = [Selected Threshold]
+RETURN CALCULATE ( [Fraud Txns], fact_transactions[RiskScore] >= _t )
+
+Sim Capture Rate % = DIVIDE ( [Sim Fraud Caught], [Fraud Txns] )
+
+Sim Good Customers Blocked =
+VAR _t = [Selected Threshold]
+RETURN
+    CALCULATE (
+        [Transactions],
+        fact_transactions[RiskScore] >= _t,
+        fact_transactions[IsFraud] = FALSE ()
+    )
+
+Sim Revenue At Risk =
+VAR _t = [Selected Threshold]
+RETURN
+    CALCULATE (
+        [Processed Volume],
+        fact_transactions[RiskScore] >= _t,
+        fact_transactions[IsFraud] = FALSE ()
+    )
+
+Sim Fraud Loss Avoided =
+VAR _t = [Selected Threshold]
+RETURN
+    CALCULATE (
+        [Processed Volume],
+        fact_transactions[RiskScore] >= _t,
+        fact_transactions[IsFraud] = TRUE ()
+    )
+
+Sim Net Benefit = [Sim Fraud Loss Avoided] - [Sim Revenue At Risk] * 0.25   // assume 25% margin lost on false declines
+
+// ---------- Risk signals ----------
+Geo Mismatch Rate % =
+DIVIDE (
+    CALCULATE ( [Transactions], FILTER ( fact_transactions, fact_transactions[CardCountry] <> fact_transactions[IPCountry] ) ),
+    [Transactions]
+)
+
+New Account Fraud Rate % =
+CALCULATE ( [Fraud Rate %], fact_transactions[AccountAgeDays] < 14 )
+
+Fraud Rate 7D Avg =
+AVERAGEX ( DATESINPERIOD ( dim_date[Date], MAX ( dim_date[Date] ), -7, DAY ), [Fraud Rate %] )
+
+// Simple anomaly flag: daily fraud rate > 30-day mean + 2 standard deviations
+Fraud Spike Flag =
+VAR _window = DATESINPERIOD ( dim_date[Date], MAX ( dim_date[Date] ) - 1, -30, DAY )
+VAR _mean = AVERAGEX ( _window, [Fraud Rate %] )
+VAR _sd = STDEVX.P ( _window, [Fraud Rate %] )
+RETURN IF ( [Fraud Rate %] > _mean + 2 * _sd, 1, 0 )
